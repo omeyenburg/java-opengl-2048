@@ -10,8 +10,8 @@ plugins {
     id 'application'
 }
 
+// https://www.lwjgl.org/customize
 import org.gradle.internal.os.OperatingSystem
-
 project.ext.lwjglVersion = "3.3.3"
 
 switch (OperatingSystem.current()) {
@@ -85,4 +85,10 @@ application {
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+run {
+    if (System.getProperty('os.name').toLowerCase().contains('mac')) {
+        jvmArgs = ['-XstartOnFirstThread']
+    }
 }

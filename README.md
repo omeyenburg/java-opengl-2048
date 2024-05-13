@@ -9,3 +9,11 @@ Refresh dependencies
 
 Run
 `./gradlew run`
+
+Clean up
+`find . -name ".DS_Store" -print -delete`
+
+Git commit & push
+`git add *`
+`git commit -m "message"`
+`git push -u origin main`
