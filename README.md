@@ -1,16 +1,17 @@
 # java-opengl-2048
 
 ## Build instructions
-Init
+
+Init:
 `gradle init`
 
-Refresh dependencies
+Refresh dependencies:
 `./gradlew build --refresh-dependencies`
 
-Run
+Run:
 `./gradlew run`
 
-Git commit & push
+Git commit & push:
 `git add *`
 `git commit -m "message"`
 `git push -u origin main`
