@@ -2,16 +2,27 @@
 
 ## Build instructions
 
-Init:
+### Init
+
 `gradle init`
 
-Refresh dependencies:
+### Refresh dependencies
+
 `./gradlew build --refresh-dependencies`
 
-Run:
-`./gradlew run`
+### Run
 
-Git commit & push:
-`git add *`
-`git commit -m "message"`
+Linux/Mac:
+`./gradlew run`
+Windows:
+`.\gradlew run`
+
+### Git pull
+
+`git pull`
+
+### Git commit & push
+
+`git add <file>` where `<file>` can be a path to a file or folder or `*` (all files) or `-a` (edited files)
+`git commit -m "<message>"`
 `git push -u origin main`
