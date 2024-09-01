@@ -5,11 +5,14 @@ import org.lwjgl.glfw.*; // https://javadoc.lwjgl.org/org/lwjgl/glfw/package-sum
 import org.lwjgl.opengl.*; // https://javadoc.lwjgl.org/org/lwjgl/opengl/package-summary.html
 import org.lwjgl.system.*; // https://javadoc.lwjgl.org/org/lwjgl/system/package-summary.html
 
+import org.main.graphics.shader.Shader;
+import org.main.graphics.shader.UniformValue;
+import org.main.graphics.shader.UniformVariable;
+
 import java.nio.*;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
@@ -102,12 +105,32 @@ public class Window {
         GL.createCapabilities();
 
         // Set the clear color
-        glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+        GL11.glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+
+
+        // temporary for testing!!!
+        String vertex_code = "#version 120\n" +
+                "attribute vec3 aPos;  // Vertex position input\n" +
+                "void main()\n" +
+                "{\n" +
+                "    gl_Position = vec4(aPos, 1.0);  // Set the position of the vertex\n" +
+                "}";
+        String fragment_code = "#version 120\n" +
+                "void main()\n" +
+                "{\n" +
+                "    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);  // Set the color to red\n" +
+                "}";
+        Shader shader = new Shader(vertex_code, fragment_code);
+
+        UniformVariable x = shader.add_var("x", UniformValue.INT.from(3), true);
+        System.out.print("x has the value:");
+        System.out.print(x.get());
+
 
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while (!glfwWindowShouldClose(window)) {
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
             glfwSwapBuffers(window); // swap the color buffers
 
@@ -116,5 +139,4 @@ public class Window {
             glfwPollEvents();
         }
     }
-
 }
