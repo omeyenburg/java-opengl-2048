@@ -35,19 +35,19 @@ Windows:
 ### Creating branch
 
 `git branch branch-name`
-`git checkout branch-name`
+`git checkout branch-name` (commit changes before)
 
 or
 
-`git checkout -b branch-name`
+`git checkout -b branch-name` (commit changes before)
 
 ### Switch to branch
 
-`git checkout branch-name`
+`git checkout branch-name` (commit changes before)
 
 ### Switch to main branch
 
-`git checkout`
+`git checkout` (commit changes before)
 
 ### Merge changes on main branch with secondary branch
 
