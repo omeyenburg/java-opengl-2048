@@ -19,6 +19,7 @@ public class Window {
     private long window;
     public Shader shader;
     private final Buffer buffer;
+    private final Textures textures;
 
     public Window() {
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
@@ -47,6 +48,9 @@ public class Window {
 
         // Create buffers
         buffer = new Buffer();
+
+        // Load textures
+        textures = new Textures("/textures/sprites.png", "/font/font.png");
 
         // Set the clear color
         GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -122,7 +126,7 @@ public class Window {
 
         buffer.add_instance(
             new Vec2(1.0f, 1.0f),
-            new Vec4(0.1f, 0.0f, 1.0f, 1.0f),
+            new Vec4(0.0f, 0.0f, 1.0f, 1.0f),
             new Vec4(1.0f, 0.0f, 0.0f, 0.0f)
         );
 
