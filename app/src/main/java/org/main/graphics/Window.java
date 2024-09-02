@@ -7,6 +7,8 @@ import org.lwjgl.system.*; // https://javadoc.lwjgl.org/org/lwjgl/system/package
 
 import org.main.graphics.shader.Shader;
 import org.main.geometry.*;
+import org.main.graphics.shader.UniformValue;
+import org.main.graphics.shader.UniformVariable;
 
 import java.nio.*;
 
@@ -20,6 +22,8 @@ public class Window {
     public Shader shader;
     private final Buffer buffer;
     private final Textures textures;
+    private float time;
+    private UniformVariable time_var;
 
     public Window() {
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
@@ -54,6 +58,9 @@ public class Window {
 
         // Set the clear color
         GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+        time = 0.0f;
+        time_var = shader.addVar("time", UniformValue.FLOAT.from(time));
     }
 
     public void quit() {
@@ -122,15 +129,29 @@ public class Window {
     }
 
     public void update() {
+        // Manage events
         glfwPollEvents();
 
+        // Background draw call for testing!
         buffer.add_instance(
             new Vec2(1.0f, 1.0f),
             new Vec4(0.0f, 0.0f, 1.0f, 1.0f),
             new Vec4(1.0f, 0.0f, 0.0f, 0.0f)
         );
 
+        // Bind textures
+        GL20.glActiveTexture(GL20.GL_TEXTURE0);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textures.tex_sprites);
+
+        GL20.glActiveTexture(GL20.GL_TEXTURE1);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textures.tex_font);
+
+        // Update shader variables
+        time += 0.005f;
+        time_var.set(UniformValue.FLOAT.from(time));
         shader.update();
+
+        // Draw
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT); // clear the framebuffer
         GL33.glDrawElementsInstanced(
             GL11.GL_TRIANGLES,
@@ -140,6 +161,7 @@ public class Window {
             buffer.index
         );
 
+        // Update display
         glfwSwapBuffers(window);
         buffer.index = 0;
     }
