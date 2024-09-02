@@ -35,9 +35,7 @@ public class Window {
         create_window();
 
         // Set up shader
-        String vertex_shader = "/shader/vertex.glsl";
-        String fragment_shader = "/shader/vertex.glsl";
-        shader = new Shader(vertex_shader, fragment_shader);
+        shader = new Shader("/shader/vertex.glsl", "/shader/vertex.glsl");
 
         // Create buffers
         buffer = new Buffer();
