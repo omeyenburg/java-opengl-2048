@@ -5,10 +5,8 @@ import org.lwjgl.glfw.*; // https://javadoc.lwjgl.org/org/lwjgl/glfw/package-sum
 import org.lwjgl.opengl.*; // https://javadoc.lwjgl.org/org/lwjgl/opengl/package-summary.html
 import org.lwjgl.system.*; // https://javadoc.lwjgl.org/org/lwjgl/system/package-summary.html
 
-import org.main.graphics.shader.Shader;
 import org.main.geometry.*;
-import org.main.graphics.shader.UniformValue;
-import org.main.graphics.shader.UniformVariable;
+import org.main.graphics.shader.*;
 
 import java.nio.*;
 
@@ -23,9 +21,9 @@ public class Window {
     private final Buffer buffer;
     private final Textures textures;
     private float time;
-    private UniformVariable time_var;
+    private float delta_time;
 
-    public Window() {
+    public Window(String title) {
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 
         // Setup an error callback. The default implementation
@@ -38,7 +36,7 @@ public class Window {
         }
 
         // Create window
-        create_window();
+        create_window(title);
 
         // This line is critical for LWJGL's interoperation with GLFW's
         // OpenGL context, or any context that is managed externally.
@@ -56,11 +54,9 @@ public class Window {
         // Load textures
         textures = new Textures("/textures/sprites.png", "/font/font.png");
 
-        // Set the clear color
         GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
         time = 0.0f;
-        time_var = shader.addVar("time", UniformValue.FLOAT.from(time));
+        delta_time = 1.0f;
     }
 
     public void quit() {
@@ -76,7 +72,7 @@ public class Window {
         }
     }
 
-    private void create_window() {
+    private void create_window(String title) {
         // Configure GLFW
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
         //glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden until shown manually
@@ -87,7 +83,7 @@ public class Window {
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL11.GL_TRUE); // Forward compatible, required on macOS
 
         // Create the window
-        window = glfwCreateWindow(300, 300, "Hello World!", NULL, NULL);
+        window = glfwCreateWindow(300, 300, title, NULL, NULL);
         if (window == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");
         }
@@ -132,6 +128,10 @@ public class Window {
         // Manage events
         glfwPollEvents();
 
+        float current_time = (float) glfwGetTime();
+        delta_time = current_time - time;
+        time = current_time;
+
         // Background draw call for testing!
         buffer.add_instance(
             new Vec2(1.0f, 1.0f),
@@ -147,8 +147,6 @@ public class Window {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, textures.tex_font);
 
         // Update shader variables
-        time += 0.005f;
-        time_var.set(UniformValue.FLOAT.from(time));
         shader.update();
 
         // Draw
@@ -168,5 +166,13 @@ public class Window {
 
     public boolean running() {
         return !glfwWindowShouldClose(window);
+    }
+
+    public float getTime() {
+        return time;
+    }
+
+    public float getDeltaTime() {
+        return delta_time;
     }
 }
