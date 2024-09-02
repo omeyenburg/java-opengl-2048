@@ -10,7 +10,12 @@ public class App {
 
 	public static void main(String[] args) {
 		Window window = new Window();
-		window.run();
+
+		while (window.running()) {
+			window.update();
+		}
+
+		window.quit();
 	}
 
 }
