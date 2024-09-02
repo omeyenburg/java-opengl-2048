@@ -19,11 +19,10 @@ public class Window {
     private float delta_time;
 
     public Window(String title) {
-        // Setup an error callback. The default implementation
-        // will print the error message in System.err.
+        // Setup error callback
         GLFWErrorCallback.createPrint(System.err).set();
 
-        // Initialize GLFW. Most GLFW functions will not work before doing this.
+        // Initialize GLFW
         if (!glfwInit()) {
             throw new IllegalStateException("Unable to initialize GLFW");
         }
@@ -73,6 +72,7 @@ public class Window {
             throw new RuntimeException("Failed to create the GLFW window");
         }
 
+        // TODO: move this somewhere else/replace with different input system
         // Setup a key callback. It will be called every time a key is pressed, repeated or released.
         glfwSetKeyCallback(window, (local_window, key, scancode, action, mods) -> {
             if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
@@ -110,16 +110,10 @@ public class Window {
         // Manage events
         glfwPollEvents();
 
+        // Update timer
         float current_time = (float) glfwGetTime();
         delta_time = current_time - time;
         time = current_time;
-
-        // Background draw call for testing!
-        buffer.add_instance(
-            new Vec2(1.0f, 1.0f),
-            new Vec4(0.0f, 0.0f, 1.0f, 1.0f),
-            new Vec4(1.0f, 0.0f, 0.0f, 0.0f)
-        );
 
         // Bind textures
         GL20.glActiveTexture(GL20.GL_TEXTURE0);
@@ -131,8 +125,10 @@ public class Window {
         // Update shader variables
         shader.update();
 
-        // Draw
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+        // Clear frame buffer
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+
+        // Draw objects
         GL33.glDrawElementsInstanced(
             GL11.GL_TRIANGLES,
             6,
@@ -144,6 +140,14 @@ public class Window {
         // Update display
         glfwSwapBuffers(window);
         buffer.index = 0;
+
+        // TODO: Implement draw functions
+        // Background draw call
+        buffer.add_instance(
+            new Vec2(0.0f, 0.0f),
+            new Vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            new Vec4(0.0f, 0.0f, 0.0f, 0.0f)
+        );
     }
 
     public boolean running() {

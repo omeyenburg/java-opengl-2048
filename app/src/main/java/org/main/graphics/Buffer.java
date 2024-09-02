@@ -14,23 +14,26 @@ public class Buffer {
     private final int vbo_color;
 
     public Buffer() {
+        // Create vertex array object
         vao = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(vao);
 
+        // Generate element and vertex buffers
         ebo_indices = GL20.glGenBuffers();
         vbo_vertices = GL20.glGenBuffers();
         vbo_shape = GL20.glGenBuffers();
         vbo_dest = GL20.glGenBuffers();
         vbo_color = GL20.glGenBuffers();
 
+        // Create vertex and texture coordinates
         float[] vertices = new float[]{
-            -1.0f, -1.0f,  0.0f, 0.0f, // bottom-left
-            -1.0f, 1.0f, 0.0f, 1.0f,   // top-left
-            1.0f, 1.0f, 1.0f, 1.0f,    // top-right
-            1.0f, -1.0f, 1.0f, 0.0f    // bottom-right
+            -1.0f, -1.0f,  0.0f, 0.0f,  // bottom-left
+            -1.0f, 1.0f,   0.0f, 1.0f,  // top-left
+            1.0f, 1.0f,    1.0f, 1.0f,  // top-right
+            1.0f, -1.0f,   1.0f, 0.0f   // bottom-right
         };
 
-        // Indices to lines in vertices
+        // Indices to lines in vertices creating two triangles
         int[] indices = new int[]{0, 1, 2, 0, 2, 3};
 
         // VBO: vertices
@@ -73,7 +76,7 @@ public class Buffer {
 
     public void add_instance(Vec2 shape, Vec4 dest, Vec4 color) {
         if (index >= size) {
-            size += 10;
+            size += 10; // Increment number of objects
             long new_float_size = (long) size * Float.BYTES;
 
             // Shape

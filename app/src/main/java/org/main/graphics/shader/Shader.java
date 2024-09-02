@@ -21,13 +21,17 @@ public class Shader {
         int vertex_shader = attachShader(vertex_code, GL20.GL_VERTEX_SHADER);
         int fragment_shader = attachShader(fragment_code, GL20.GL_FRAGMENT_SHADER);
 
+        // Apply shaders
         GL20.glLinkProgram(program);
+
+        // Clean up shaders
         GL20.glDeleteShader(vertex_shader);
         GL20.glDeleteShader(fragment_shader);
 
+        // Check linking status
         if (GL20.glGetProgrami(program, GL20.GL_LINK_STATUS) != 1) {
             System.out.println("Shader linking failed!");
-            System.exit(0);
+            System.exit(1);
         }
 
     }
@@ -41,14 +45,18 @@ public class Shader {
     }
 
     public UniformVariable addVar(String name, UniformValue value, boolean send) {
+        // Find location of uniform variable name in shaders
         int location = GL20.glGetUniformLocation(program, name);
+
         UniformVariable variable = new UniformVariable(value, location, send);
         variables.add(variable);
         return variable;
     }
 
     public UniformVariable addVar(String name, UniformValue value) {
+        // Find location of uniform variable name in shaders
         int location = GL20.glGetUniformLocation(program, name);
+
         UniformVariable variable = new UniformVariable(value, location, true);
         variables.add(variable);
         return variable;
@@ -57,13 +65,15 @@ public class Shader {
     private int attachShader(String shader_code, int shader_type) {
         int id = GL20.glCreateShader(shader_type);
 
+        // Read and compile shader code
         GL20.glShaderSource(id, shader_code);
         GL20.glCompileShader(id);
 
+        // Check for errors in shader code
         if (GL20.glGetShaderi(id, GL20.GL_COMPILE_STATUS) != 1) {
             System.out.println("Shader compilation failed!");
             System.out.print(GL20.glGetShaderInfoLog(id));
-            System.exit(0);
+            System.exit(1);
         }
 
         GL20.glAttachShader(program, id);
