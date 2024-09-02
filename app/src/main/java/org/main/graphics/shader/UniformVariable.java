@@ -2,7 +2,7 @@ package org.main.graphics.shader;
 
 public class UniformVariable {
     private UniformValue value;
-    private int location;
+    private final int location;
     private boolean send;
 
     public UniformVariable(UniformValue value, int location, boolean send) {

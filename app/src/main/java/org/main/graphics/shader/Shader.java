@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import org.lwjgl.opengl.*; // imports GL11, GL20, GL30, GL33; functions are spread across these versions
 
 public class Shader {
-    private int program;
-    private ArrayList<UniformVariable> variables;
+    private final int program;
+    private final ArrayList<UniformVariable> variables;
 
     public Shader(String vertex, String fragment) {
         program = GL20.glCreateProgram();
@@ -36,6 +36,13 @@ public class Shader {
     public UniformVariable add_var(String name, UniformValue value, boolean send) {
         int location = GL20.glGetUniformLocation(program, name);
         UniformVariable variable = new UniformVariable(value, location, send);
+        variables.add(variable);
+        return variable;
+    }
+
+    public UniformVariable add_var(String name, UniformValue value) {
+        int location = GL20.glGetUniformLocation(program, name);
+        UniformVariable variable = new UniformVariable(value, location, true);
         variables.add(variable);
         return variable;
     }
