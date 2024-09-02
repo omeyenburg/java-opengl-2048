@@ -11,7 +11,15 @@ public class Vec2 {
         return array[0];
     }
 
+    public void x(float value) {
+        array[0] = value;
+    }
+
     public float y() {
         return array[1];
+    }
+
+    public void y(float value) {
+        array[1] = value;
     }
 }
