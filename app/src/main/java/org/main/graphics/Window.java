@@ -1,18 +1,13 @@
 package org.main.graphics;
 
-import org.lwjgl.*; // https://javadoc.lwjgl.org/org/lwjgl/package-summary.html
-import org.lwjgl.glfw.*; // https://javadoc.lwjgl.org/org/lwjgl/glfw/package-summary.html
-import org.lwjgl.opengl.*; // https://javadoc.lwjgl.org/org/lwjgl/opengl/package-summary.html
-import org.lwjgl.system.*; // https://javadoc.lwjgl.org/org/lwjgl/system/package-summary.html
-
 import org.main.geometry.*;
 import org.main.graphics.shader.*;
 
-import java.nio.*;
-
+import org.lwjgl.glfw.*; // https://javadoc.lwjgl.org/org/lwjgl/glfw/package-summary.html
+import org.lwjgl.opengl.*; // https://javadoc.lwjgl.org/org/lwjgl/opengl/package-summary.html
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.system.MemoryStack.*;
+import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
 import static org.lwjgl.system.MemoryUtil.*;
 
 public class Window {
@@ -24,8 +19,6 @@ public class Window {
     private float delta_time;
 
     public Window(String title) {
-        System.out.println("Hello LWJGL " + Version.getVersion() + "!");
-
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set();
@@ -37,13 +30,6 @@ public class Window {
 
         // Create window
         create_window(title);
-
-        // This line is critical for LWJGL's interoperation with GLFW's
-        // OpenGL context, or any context that is managed externally.
-        // LWJGL detects the context that is current in the current thread,
-        // creates the GLCapabilities instance and makes the OpenGL
-        // bindings available for use.
-        GL.createCapabilities();
 
         // Set up shader
         shader = new Shader("/shader/vertex.glsl", "/shader/fragment.glsl");
@@ -74,12 +60,11 @@ public class Window {
 
     private void create_window(String title) {
         // Configure GLFW
-        glfwDefaultWindowHints(); // optional, the current window hints are already the default
-        //glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden until shown manually
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // Request OpenGL 3.3
+        glfwDefaultWindowHints();
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Use Core Profile
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL11.GL_TRUE); // Forward compatible, required on macOS
 
         // Create the window
@@ -95,33 +80,30 @@ public class Window {
 
             }});
 
-        // Get the thread stack and push a new frame
-        try (MemoryStack stack = stackPush()) {
-            IntBuffer pWidth = stack.mallocInt(1); // int*
-            IntBuffer pHeight = stack.mallocInt(1); // int*
+        // Get window size
+        int[] screen_width = new int[]{0};
+        int[] screen_height = new int[]{0};
+        glfwGetWindowSize(window, screen_width, screen_height);
 
-            // Get the window size passed to glfwCreateWindow
-            glfwGetWindowSize(window, pWidth, pHeight);
+        // Get the resolution of the primary monitor
+        GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        assert vidmode != null;
 
-            // Get the resolution of the primary monitor
-            GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-            assert vidmode != null;
-
-            // Center the window
-            glfwSetWindowPos(
-                    window,
-                    (vidmode.width() - pWidth.get(0)) / 2,
-                    (vidmode.height() - pHeight.get(0)) / 2
-            );
-        } // the stack frame is popped automatically
+        // Center the window
+        glfwSetWindowPos(
+            window,
+            (vidmode.width() - screen_width[0]) / 2,
+            (vidmode.height() - screen_height[0]) / 2
+        );
 
         // Make the OpenGL context current
         glfwMakeContextCurrent(window);
+
         // Enable v-sync
         glfwSwapInterval(1);
 
-        // Make the window visible
-        //glfwShowWindow(window); // needed if glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); was set
+        // Retrieve context for lwjgl
+        GL.createCapabilities();
     }
 
     public void update() {
