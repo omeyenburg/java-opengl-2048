@@ -6,6 +6,7 @@ import org.lwjgl.opengl.*; // https://javadoc.lwjgl.org/org/lwjgl/opengl/package
 import org.lwjgl.system.*; // https://javadoc.lwjgl.org/org/lwjgl/system/package-summary.html
 
 import org.main.graphics.shader.Shader;
+import org.main.geometry.*;
 
 import java.nio.*;
 
@@ -34,12 +35,6 @@ public class Window {
         // Create window
         create_window();
 
-        // Set up shader
-        shader = new Shader("/shader/vertex.glsl", "/shader/vertex.glsl");
-
-        // Create buffers
-        buffer = new Buffer();
-
         // This line is critical for LWJGL's interoperation with GLFW's
         // OpenGL context, or any context that is managed externally.
         // LWJGL detects the context that is current in the current thread,
@@ -47,8 +42,14 @@ public class Window {
         // bindings available for use.
         GL.createCapabilities();
 
+        // Set up shader
+        shader = new Shader("/shader/vertex.glsl", "/shader/fragment.glsl");
+
+        // Create buffers
+        buffer = new Buffer();
+
         // Set the clear color
-        GL11.glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+        GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     }
 
     public void quit() {
@@ -119,15 +120,21 @@ public class Window {
     public void update() {
         glfwPollEvents();
 
+        buffer.add_instance(
+            new Vec2(1.0f, 1.0f),
+            new Vec4(0.1f, 0.0f, 1.0f, 1.0f),
+            new Vec4(1.0f, 0.0f, 0.0f, 0.0f)
+        );
+
         shader.update();
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT); // clear the framebuffer
         GL33.glDrawElementsInstanced(
-                GL11.GL_TRIANGLES,
-                6,
-                GL11.GL_UNSIGNED_INT,
-                0L,
-                buffer.index
-            );
+            GL11.GL_TRIANGLES,
+            6,
+            GL11.GL_UNSIGNED_INT,
+            0L,
+            buffer.index
+        );
 
         glfwSwapBuffers(window);
         buffer.index = 0;
