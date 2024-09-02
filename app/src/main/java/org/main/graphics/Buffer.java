@@ -4,9 +4,9 @@ import org.lwjgl.opengl.*; // imports GL11, GL20, GL30, GL33; functions are spre
 import org.main.geometry.*;
 
 public class Buffer {
-    public final int vao;
+    public int index;
     private int size;
-    private int index;
+    private final int vao;
     private final int ebo_indices;
     private final int vbo_vertices;
     private final int vbo_shape;
