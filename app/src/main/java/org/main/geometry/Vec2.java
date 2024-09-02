@@ -22,4 +22,8 @@ public class Vec2 {
     public void y(float value) {
         array[1] = value;
     }
+
+    public float[] array() {
+        return this.array;
+    }
 }

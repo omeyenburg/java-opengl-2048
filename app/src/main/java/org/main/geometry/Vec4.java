@@ -70,4 +70,8 @@ public class Vec4 {
     public void a(float value) {
         array[3] = value;
     }
+
+    public float[] array() {
+        return this.array;
+    }
 }

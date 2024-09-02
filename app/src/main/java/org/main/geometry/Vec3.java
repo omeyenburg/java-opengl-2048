@@ -54,4 +54,8 @@ public class Vec3 {
     public void b(float value) {
         array[2] = value;
     }
+
+    public float[] array() {
+        return this.array;
+    }
 }

@@ -72,6 +72,61 @@ public class Buffer {
     }
 
     public void add_instance(Vec2 shape, Vec4 dest, Vec4 color) {
+        if (index >= size) {
+            size += 10;
+            long new_float_size = (long) size * Float.BYTES;
 
+            // Shape
+            GL20.glBindBuffer(GL20.GL_ARRAY_BUFFER, vbo_shape);
+            GL20.glBufferData(
+                GL20.GL_ARRAY_BUFFER,
+                new_float_size * 2,
+                GL30.GL_STREAM_COPY
+            );
+
+            // Dest
+            GL20.glBindBuffer(GL20.GL_ARRAY_BUFFER, vbo_dest);
+            GL20.glBufferData(
+                GL20.GL_ARRAY_BUFFER,
+                new_float_size * 4,
+                GL30.GL_STREAM_COPY
+            );
+
+            // Color
+            GL20.glBindBuffer(GL20.GL_ARRAY_BUFFER, vbo_color);
+            GL20.glBufferData(
+                GL20.GL_ARRAY_BUFFER,
+                new_float_size * 4,
+                GL30.GL_STREAM_COPY
+            );
+        }
+
+        long data_offset = (long) index * Float.BYTES;
+
+        // Shape
+        GL20.glBindBuffer(GL20.GL_ARRAY_BUFFER, vbo_shape);
+        GL20.glBufferSubData(
+                GL20.GL_ARRAY_BUFFER,
+                2 * data_offset,
+                shape.array()
+        );
+
+        // Dest
+        GL20.glBindBuffer(GL20.GL_ARRAY_BUFFER, vbo_dest);
+        GL20.glBufferSubData(
+                GL20.GL_ARRAY_BUFFER,
+                4 * data_offset,
+                dest.array()
+        );
+
+        // Color
+        GL20.glBindBuffer(GL20.GL_ARRAY_BUFFER, vbo_color);
+        GL20.glBufferSubData(
+                GL20.GL_ARRAY_BUFFER,
+                4 * data_offset,
+                color.array()
+        );
+
+        index += 1;
     }
 }
