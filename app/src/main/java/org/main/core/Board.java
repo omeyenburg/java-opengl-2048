@@ -9,13 +9,18 @@ public class Board {
         reset();
     }
 
-    public void move() {}
+    public void move(int direction) {}
 
     public boolean isRunning() {
         return state;
     }
 
     public void reset() {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                grid[i][j] = 0;
+            }
+        }
         state = true;
     }
 }
